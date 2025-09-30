@@ -178,7 +178,7 @@ export default function Home() {
 
                 <div className="text-center">
                     <button
-                        onClick={() => navigate("/products")}
+                        onClick={() => navigate("/all-recents-products")}
                         className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
                         Ver mais produtos
                     </button>
@@ -241,9 +241,9 @@ export default function Home() {
 
                 <div className="text-center">
                     <button
-                        onClick={() => navigate("/products")}
+                        onClick={() => navigate("/all-products")}
                         className="bg-gradient-to-r from-secundary to-secundary/80 hover:from-secundary/90 hover:to-secundary text-white px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
-                        Carregar mais anúncios
+                        Ver tudo
                     </button>
                 </div>
             </section>

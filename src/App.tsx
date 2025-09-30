@@ -2,7 +2,8 @@
 import About from "./pages/about";
 import Details from "./pages/details";
 import Home from "./pages/home";
-import ListProducts from "./pages/list-products";
+import ListRecentsProducts from "./pages/list-recents-products";
+import ListAllProducts from "./pages/list-all-products";
 import NotFound from "./pages/NotFound";
 import SearchProducts from "./pages/search";
 
@@ -51,10 +52,19 @@ export default function App() {
     },
     {
       // Rota da listagem de produtos
-      path: "/products",
+      path: "/all-products",
       element: (
         <UserTemplate>
-          <ListProducts />
+          <ListAllProducts />
+        </UserTemplate>
+      ),
+    },
+    {
+      // Rota da listagem de produtos recentes
+      path: "/all-recents-products",
+      element: (
+        <UserTemplate>
+          <ListRecentsProducts />
         </UserTemplate>
       ),
     },
