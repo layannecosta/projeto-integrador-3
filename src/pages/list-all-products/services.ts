@@ -10,5 +10,5 @@ export async function getApiAllProducts(): Promise<
 export async function getApiAllProductsOrders(
     typeOrder: "descending" | "ascending"
 ): Promise<AxiosResponse<products[], any>> {
-    return await api.get('/products?order=${typeOrder}');
+    return await api.get(`/products?order=${typeOrder}`);
 }

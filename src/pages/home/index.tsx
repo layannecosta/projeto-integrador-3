@@ -54,6 +54,8 @@ export default function Home() {
 
     const navigate = useNavigate();
 
+    const [inputSearch, setInputSearch] = useState("");
+
     const [recentsProducts, setRecentsProducts] = useState<Products[]>([]);
 
     const [recommendedProducts, setRecommendedProducts] = useState<Products[]>([]);
@@ -145,9 +147,10 @@ export default function Home() {
                         <input
                             className="flex-1 text-gray-700 placeholder-gray-400 bg-transparent outline-none text-lg"
                             placeholder="Estou buscando por..."
+                            onChange={(event) => setInputSearch(event.target.value)}
                         />
                         <button
-                            onClick={() => navigate("/products/search")}
+                            onClick={() => navigate(`/products/search/${inputSearch}`)}
                             className="bg-primary hover:bg-primary/90 transition-colors duration-200 p-2 rounded-full cursor-pointer ml-3">
                             <IoIosSearch size={20} className="text-white" />
                         </button>

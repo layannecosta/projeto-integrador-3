@@ -79,7 +79,7 @@ export default function App() {
     },
     {
       // Rota de busca de produtos
-      path: "/products/search",
+      path: "/products/search/:product",
       element: (
         <UserTemplate>
           <SearchProducts />
