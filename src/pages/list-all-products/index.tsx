@@ -3,11 +3,15 @@ import CardProduct from "../../components/card-product/cardProduct";
 import { products } from "./type";
 import { getApiAllProducts, getApiAllProductsOrders } from "./services";
 import ListLoading from "../../components/list-loading";
+import { IoIosSearch } from "react-icons/io";
+import { useNavigate } from "react-router";
 
 export default function ListAllProducts() {
-   const [allProducts, setAllProducts] = useState<products[]>([]);
+   const navigate = useNavigate();
 
+   const [allProducts, setAllProducts] = useState<products[]>([]);
    const [isLoadingRecents, setIsLoadingRecents] = useState(false);
+   const [inputSearch, setInputSearch] = useState("");
 
    async function getAllProducts() {
       setIsLoadingRecents(true)
@@ -45,16 +49,44 @@ export default function ListAllProducts() {
             <p className="text-gray-600 text-lg">Descubra as melhores ofertas disponíveis</p>
          </div>
 
+         {/* Barra de pesquisa */}
+         <div className="max-w-2xl mx-auto">
+            <div className="relative group">
+               <div className="flex items-center bg-white border-2 border-gray-200 rounded-full shadow-md hover:shadow-lg hover:border-primary/30 transition-all duration-300 px-6 py-3">
+                  <input
+                     className="flex-1 text-gray-700 placeholder-gray-400 bg-transparent outline-none text-lg"
+                     placeholder="Estou buscando por..."
+                     value={inputSearch}
+                     onChange={(event) => setInputSearch(event.target.value)}
+                     onKeyDown={(event) => {
+                        if (event.key === 'Enter' && inputSearch.trim()) {
+                           navigate(`/products/search/${inputSearch}`);
+                        }
+                     }}
+                  />
+                  <button
+                     onClick={() => {
+                        if (inputSearch.trim()) {
+                           navigate(`/products/search/${inputSearch}`);
+                        }
+                     }}
+                     className="bg-primary hover:bg-primary/90 transition-colors duration-200 p-2 rounded-full cursor-pointer ml-3">
+                     <IoIosSearch size={20} className="text-white" />
+                  </button>
+               </div>
+            </div>
+         </div>
+
          {/* Ordenação dos produtos */}
-         <div>
-            <p>
+         <div className="flex justify-center">
+            <p className="text-gray-700">
                Ordenar por: {" "}
                <button
-                  className=" text-primary"
+                  className="text-primary hover:text-primary/80 font-medium transition-colors duration-200"
                   onClick={() => getAllOrdersProducts("ascending")}
                > Menor preço</button> {" "} | {" "}
                <button
-                  className=" text-primary"
+                  className="text-primary hover:text-primary/80 font-medium transition-colors duration-200"
                   onClick={() => getAllOrdersProducts("descending")}
                >Maior preço</button>
             </p>

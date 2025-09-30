@@ -64,6 +64,12 @@ export default function Home() {
 
     const [isLoadingRecommendedProducts, setIsLoadingRecommendedProducts] = useState(false);
 
+    function handleSearch() {
+        if (inputSearch.trim()) {
+            navigate(`/products/search/${inputSearch}`);
+        }
+    }
+
     async function getRecentsProducts() {
         setIsLoadingRecentsProducts(true);
         try {
@@ -147,10 +153,16 @@ export default function Home() {
                         <input
                             className="flex-1 text-gray-700 placeholder-gray-400 bg-transparent outline-none text-lg"
                             placeholder="Estou buscando por..."
+                            value={inputSearch}
                             onChange={(event) => setInputSearch(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleSearch();
+                                }
+                            }}
                         />
                         <button
-                            onClick={() => navigate(`/products/search/${inputSearch}`)}
+                            onClick={handleSearch}
                             className="bg-primary hover:bg-primary/90 transition-colors duration-200 p-2 rounded-full cursor-pointer ml-3">
                             <IoIosSearch size={20} className="text-white" />
                         </button>
