@@ -16,7 +16,6 @@ export default function Contact() {
 
     const [errors, setErrors] = useState<Partial<ContactForm>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitSuccess, setSubmitSuccess] = useState(false);
 
     const validateForm = (): boolean => {
         const newErrors: Partial<ContactForm> = {};
@@ -67,7 +66,6 @@ export default function Contact() {
                 console.log("Dados do contato:", formData);
                 setIsSubmitting(false);
 
-                // Substitui setSubmitSuccess(true)
                 toastService.success("Mensagem enviada com sucesso! Entraremos em contato em breve.");
 
                 setFormData({
@@ -96,14 +94,6 @@ export default function Contact() {
                     </div>
 
                     <div className="px-8 py-8">
-                        {submitSuccess && (
-                            <div className="mb-6 bg-green-50 border-2 border-green-500 rounded-lg p-4 text-center">
-                                <p className="text-green-700 font-semibold">
-                                    ✓ Mensagem enviada com sucesso! Entraremos em contato em breve.
-                                </p>
-                            </div>
-                        )}
-
                         <div className="space-y-6">
                             <div className="space-y-2">
                                 <label className="text-gray-700 font-medium block">Nome completo *</label>
