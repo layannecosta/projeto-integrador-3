@@ -34,7 +34,6 @@ import 'react-toastify/dist/ReactToastify.css';
  * Configura e gerencia todas as rotas da aplicação usando React Router
  */
 export default function App() {
-  <ToastContainer />
   // Configuração das rotas da aplicação
   const router = createBrowserRouter([
     {
@@ -154,9 +153,13 @@ export default function App() {
         </UserTemplate>
       ),
     },
-
   ]);
 
   // Renderiza o provedor de rotas com a configuração definida
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <ToastContainer />
+      <RouterProvider router={router} />
+    </>
+  );
 }
