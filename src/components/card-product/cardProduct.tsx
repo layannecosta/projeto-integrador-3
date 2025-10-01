@@ -50,7 +50,7 @@ export default function CardProduct(props: CardProps) {
                 {/* Botões de ação */}
                 <div className="pt-3 space-y-2">
                     <button
-                        onClick={() => navigate("/products/details")}
+                        onClick={() => navigate(`/products/details/${props.id}`)}
                         className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
                     >
                         Ver Detalhes

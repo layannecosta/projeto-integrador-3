@@ -70,7 +70,7 @@ export default function App() {
     },
     {
       // Rota dos detalhes de um produto específico
-      path: "/products/details",
+      path: "/products/details/:id",
       element: (
         <UserTemplate>
           <Details />

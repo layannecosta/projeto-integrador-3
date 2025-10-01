@@ -1,13 +1,65 @@
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import carousel2 from '../../assets/product-detail.png';
+import { useParams } from 'react-router-dom';
+import { getApiDetailsProducts } from './services';
+import { useEffect, useState } from 'react';
+import { Products } from '../home/type';
 
 export default function Details() {
+    const params = useParams();
+    const id = params?.id;
+
+    const [product, setProduct] = useState<Products | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    async function getDetailsProduct() {
+        if (!id) {
+            alert("ID do produto não encontrado");
+            setIsLoading(false);
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const response = await getApiDetailsProducts(id);
+            setProduct(response.data);
+        } catch (error) {
+            alert("Erro ao buscar dados do produto");
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        getDetailsProduct();
+    }, [id]);
+
+    if (isLoading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                <div className="text-center">
+                    <p className="text-gray-600 text-xl">Carregando produto...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!product) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                <div className="text-center">
+                    <p className="text-gray-600 text-xl">Produto não encontrado</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
             {/* Título */}
             <div className="space-y-3">
-                <h2 className="text-4xl font-bold text-gray-800">Echo Dot (8ª Geração)</h2>
+                <h2 className="text-4xl font-bold text-gray-800">{product.name}</h2>
                 <div className="w-32 h-1 bg-gradient-to-r from-primary to-secundary rounded-full"></div>
             </div>
 
@@ -25,13 +77,18 @@ export default function Details() {
                             transitionTime={600}
                         >
                             <div className="bg-white rounded-xl p-4">
-                                <img src={carousel2} alt="Carousel 1" className="w-full h-64 object-contain" />
+                                <img
+                                    src={product.url1}
+                                    alt={`${product.name} - Imagem 1`}
+                                    className="w-full h-64 object-contain"
+                                />
                             </div>
                             <div className="bg-white rounded-xl p-4">
-                                <img src={carousel2} alt="Carousel 2" className="w-full h-64 object-contain" />
-                            </div>
-                            <div className="bg-white rounded-xl p-4">
-                                <img src={carousel2} alt="Carousel 3" className="w-full h-64 object-contain" />
+                                <img
+                                    src={product.url2}
+                                    alt={`${product.name} - Imagem 2`}
+                                    className="w-full h-64 object-contain"
+                                />
                             </div>
                         </Carousel>
                     </div>
@@ -44,7 +101,9 @@ export default function Details() {
                         <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
                         <div className="relative z-10">
                             <p className="text-white/80 text-lg mb-2">Preço especial</p>
-                            <p className="text-white text-4xl font-bold">R$ 799,00</p>
+                            <p className="text-white text-4xl font-bold">
+                                R$ {product.price.toFixed(2)}
+                            </p>
                             <p className="text-white/90 text-lg mt-2">à vista</p>
                         </div>
                     </div>
@@ -56,10 +115,10 @@ export default function Details() {
                         </div>
                         <div className="px-6 py-6 space-y-4">
                             <div className="space-y-3">
-                                <p className="text-gray-700 font-medium">Nome do Vendedor</p>
-                                <p className="text-gray-700">Cidade do Vendedor</p>
-                                <p className="text-gray-700">Email do Vendedor</p>
-                                <p className="text-gray-700">Telefone do Vendedor</p>
+                                <p className="text-gray-700 font-medium">{product.manufacturer}</p>
+                                <p className="text-gray-600 text-sm">
+                                    Entre em contato para mais informações
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -70,12 +129,12 @@ export default function Details() {
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                 <div className="space-y-6">
                     <h3 className="text-2xl font-bold text-gray-800">Descrição</h3>
-
-                    <p className="text-gray-700 leading-relaxed text-lg">
-                        A Alexa é a assistente virtual da Amazon, controlada por voz. Ela pode ser integrada a diversos dispositivos, como os da linha Echo, para executar tarefas como tocar música, definir alarmes e controlar a casa inteligente. Sua tecnologia permite uma interação natural, tornando a experiência do usuário mais conveniente e acessível.
-                    </p>
+                    <div
+                        className="text-gray-700 leading-relaxed prose max-w-none"
+                        dangerouslySetInnerHTML={{ __html: product.description }}
+                    />
                 </div>
             </div>
         </div>
-    )
+    );
 }

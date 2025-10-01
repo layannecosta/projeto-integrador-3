@@ -183,6 +183,7 @@ export default function Home() {
                         recentsProducts.map((product) => (
                             <CardProduct
                                 key={product._id}
+                                id={product._id}
                                 name={product.name}
                                 img={product.url1}
                                 manufacturer={product.manufacturer}
@@ -246,6 +247,7 @@ export default function Home() {
                         recommendedProducts.map((product) => (
                             <CardProduct
                                 key={product._id}
+                                id={product._id}
                                 name={product.name}
                                 img={product.url1}
                                 manufacturer={product.manufacturer}

@@ -7,6 +7,10 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import carousel1 from "../../assets/carousel1.jpg";
 import { useNavigate } from "react-router";
+import { getApiRecentsProducts, getApiRecommendedProducts } from "../home/services";
+import { useEffect, useState } from "react";
+import { Products } from "../home/type";
+import ListLoading from "../../components/list-loading";
 
 const itemsCategory = [
     {
@@ -47,7 +51,60 @@ const itemsCategory = [
 ]
 
 export default function Dashboard() {
-    const navigate = useNavigate()
+
+    const navigate = useNavigate();
+
+    const [inputSearch, setInputSearch] = useState("");
+
+    const [recentsProducts, setRecentsProducts] = useState<Products[]>([]);
+
+    const [recommendedProducts, setRecommendedProducts] = useState<Products[]>([]);
+
+    const [isLoadingRecentsProducts, setIsLoadingRecentsProducts] = useState(false);
+
+    const [isLoadingRecommendedProducts, setIsLoadingRecommendedProducts] = useState(false);
+
+    function handleSearch() {
+        if (inputSearch.trim()) {
+            navigate(`/products/search/${inputSearch}`);
+        }
+    }
+
+    async function getRecentsProducts() {
+        setIsLoadingRecentsProducts(true);
+        try {
+            const response = await getApiRecentsProducts();
+
+            setRecentsProducts(response.data);
+        } catch (error) {
+            alert("Houve um erro ao buscar produtos recentes.")
+        }
+        setIsLoadingRecentsProducts(false);
+    };
+
+    async function getRecommendedProducts() {
+        setIsLoadingRecommendedProducts(true);
+        try {
+            const response = await getApiRecommendedProducts();
+
+            setRecommendedProducts(response.data);
+        } catch (error) {
+            alert("Houve um erro ao buscar produtos recomendados.")
+        }
+        setIsLoadingRecommendedProducts(false);
+    };
+
+
+    useEffect(() => {
+        getRecentsProducts();
+
+    }, []);
+
+    useEffect(() => {
+        getRecommendedProducts();
+
+    }, []);
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-6 space-y-10">
             {/* Carrossel*/}
@@ -96,9 +153,16 @@ export default function Dashboard() {
                         <input
                             className="flex-1 text-gray-700 placeholder-gray-400 bg-transparent outline-none text-lg"
                             placeholder="Estou buscando por..."
+                            value={inputSearch}
+                            onChange={(event) => setInputSearch(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleSearch();
+                                }
+                            }}
                         />
                         <button
-                            onClick={() => navigate("/products/search")}
+                            onClick={handleSearch}
                             className="bg-primary hover:bg-primary/90 transition-colors duration-200 p-2 rounded-full cursor-pointer ml-3">
                             <IoIosSearch size={20} className="text-white" />
                         </button>
@@ -113,25 +177,24 @@ export default function Dashboard() {
                     <div className="w-24 h-1 bg-gradient-to-r from-primary to-secundary mx-auto rounded-full"></div>
                     <p className="text-gray-600 text-lg">Confira os produtos adicionados recentemente</p>
                 </div>
-
+                {isLoadingRecentsProducts && <ListLoading />}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
-                    <div className="transform hover:scale-105 transition-transform duration-300">
-                        <CardProduct />
-                    </div>
-                    <div className="transform hover:scale-105 transition-transform duration-300">
-                        <CardProduct />
-                    </div>
-                    <div className="transform hover:scale-105 transition-transform duration-300">
-                        <CardProduct />
-                    </div>
-                    <div className="transform hover:scale-105 transition-transform duration-300">
-                        <CardProduct />
-                    </div>
+                    {
+                        recentsProducts.map((product) => (
+                            <CardProduct
+                                key={product._id}
+                                id={product._id}
+                                name={product.name}
+                                img={product.url1}
+                                manufacturer={product.manufacturer}
+                                price={product.price}
+                            />
+                        ))}
                 </div>
 
                 <div className="text-center">
                     <button
-                        onClick={() => navigate("/products")}
+                        onClick={() => navigate("/all-recents-products")}
                         className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
                         Ver mais produtos
                     </button>
@@ -149,11 +212,11 @@ export default function Dashboard() {
                             <h2 className="text-white font-bold text-3xl">Explore por Categorias</h2>
                             <p className="text-white/80 text-lg">Encontre exatamente o que você procura</p>
                         </div>
-
+                        {isLoadingRecommendedProducts && <ListLoading />}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 justify-items-center">
-                            {itemsCategory.map((category) => (
+                            {itemsCategory.map((category, index) => (
                                 <div
-                                    key={category.id}
+                                    key={index}
                                     className="group flex flex-col justify-center items-center space-y-3 cursor-pointer"
                                 >
                                     <div className="bg-white text-primary w-16 h-16 rounded-2xl flex justify-center items-center shadow-lg group-hover:shadow-xl group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 group-hover:bg-gray-50">
@@ -180,18 +243,24 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
-                    {Array.from({ length: 8 }, (_, index) => (
-                        <div key={index} className="transform hover:scale-105 transition-transform duration-300">
-                            <CardProduct />
-                        </div>
-                    ))}
+                    {
+                        recommendedProducts.map((product) => (
+                            <CardProduct
+                                key={product._id}
+                                id={product._id}
+                                name={product.name}
+                                img={product.url1}
+                                manufacturer={product.manufacturer}
+                                price={product.price}
+                            />
+                        ))}
                 </div>
 
                 <div className="text-center">
                     <button
-                        onClick={() => navigate("/products")}
+                        onClick={() => navigate("/all-products")}
                         className="bg-gradient-to-r from-secundary to-secundary/80 hover:from-secundary/90 hover:to-secundary text-white px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
-                        Carregar mais anúncios
+                        Ver tudo
                     </button>
                 </div>
             </section>
