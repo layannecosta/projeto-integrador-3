@@ -25,11 +25,16 @@ import UserProducts from "./pages/user-products";
 import FormProducts from "./pages/form-product";
 import Contact from "./pages/contact";
 
+// Importações do Toast
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 /**
  * Componente principal da aplicação
  * Configura e gerencia todas as rotas da aplicação usando React Router
  */
 export default function App() {
+  <ToastContainer />
   // Configuração das rotas da aplicação
   const router = createBrowserRouter([
     {
@@ -149,6 +154,7 @@ export default function App() {
         </UserTemplate>
       ),
     },
+
   ]);
 
   // Renderiza o provedor de rotas com a configuração definida

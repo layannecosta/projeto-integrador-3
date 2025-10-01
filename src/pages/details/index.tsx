@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getApiDetailsProducts } from './services';
 import { useEffect, useState } from 'react';
 import { Products } from '../home/type';
+import { toastService } from '../../utils/toastConfig';
 
 export default function Details() {
     const params = useParams();
@@ -14,7 +15,7 @@ export default function Details() {
 
     async function getDetailsProduct() {
         if (!id) {
-            alert("ID do produto não encontrado");
+            toastService.error("ID do produto não encontrado");
             setIsLoading(false);
             return;
         }
@@ -24,8 +25,7 @@ export default function Details() {
             const response = await getApiDetailsProducts(id);
             setProduct(response.data);
         } catch (error) {
-            alert("Erro ao buscar dados do produto");
-            console.error(error);
+            toastService.apiError(error, "Erro ao carregar detalhes do produto");
         } finally {
             setIsLoading(false);
         }
@@ -39,7 +39,8 @@ export default function Details() {
         return (
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <div className="text-center">
-                    <p className="text-gray-600 text-xl">Carregando produto...</p>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    <p className="text-gray-600 text-xl mt-4">Carregando produto...</p>
                 </div>
             </div>
         );
@@ -48,8 +49,14 @@ export default function Details() {
     if (!product) {
         return (
             <div className="max-w-7xl mx-auto px-4 py-8">
-                <div className="text-center">
+                <div className="text-center space-y-4">
                     <p className="text-gray-600 text-xl">Produto não encontrado</p>
+                    <button
+                        onClick={() => window.history.back()}
+                        className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                        Voltar
+                    </button>
                 </div>
             </div>
         );

@@ -11,6 +11,7 @@ import { getApiRecentsProducts, getApiRecommendedProducts } from "../home/servic
 import { useEffect, useState } from "react";
 import { Products } from "../home/type";
 import ListLoading from "../../components/list-loading";
+import { toastService } from "../../utils/toastConfig";
 
 const itemsCategory = [
     {
@@ -74,25 +75,23 @@ export default function Dashboard() {
         setIsLoadingRecentsProducts(true);
         try {
             const response = await getApiRecentsProducts();
-
             setRecentsProducts(response.data);
         } catch (error) {
-            alert("Houve um erro ao buscar produtos recentes.")
+            toastService.apiError(error, "Erro ao buscar produtos recentes");
         }
         setIsLoadingRecentsProducts(false);
-    };
+    }
 
     async function getRecommendedProducts() {
         setIsLoadingRecommendedProducts(true);
         try {
             const response = await getApiRecommendedProducts();
-
             setRecommendedProducts(response.data);
         } catch (error) {
-            alert("Houve um erro ao buscar produtos recomendados.")
+            toastService.apiError(error, "Erro ao buscar produtos recomendados");
         }
         setIsLoadingRecommendedProducts(false);
-    };
+    }
 
 
     useEffect(() => {

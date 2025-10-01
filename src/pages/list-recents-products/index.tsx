@@ -3,6 +3,7 @@ import CardProduct from "../../components/card-product/cardProduct";
 import { products } from "./type";
 import { getApiAllRecentsProducts } from "./services";
 import ListLoading from "../../components/list-loading";
+import { toastService } from "../../utils/toastConfig";
 
 export default function ListRecentsProducts() {
    const [allProducts, setAllProducts] = useState<products[]>([]);
@@ -14,8 +15,12 @@ export default function ListRecentsProducts() {
       try {
          const response = await getApiAllRecentsProducts();
          setAllProducts(response.data);
+
+         if (response.data.length === 0) {
+            toastService.info("Nenhum produto recente encontrado");
+         }
       } catch (error) {
-         alert("Houve um erro ao buscar produtos recentes.");
+         toastService.apiError(error, "Erro ao buscar produtos recentes");
       }
       setIsLoadingRecents(false)
    }

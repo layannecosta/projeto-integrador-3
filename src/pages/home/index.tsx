@@ -11,6 +11,7 @@ import { getApiRecentsProducts, getApiRecommendedProducts } from "./services";
 import { useEffect, useState } from "react";
 import { Products } from "./type";
 import ListLoading from "../../components/list-loading";
+import { toastService } from "../../utils/toastConfig";
 
 const itemsCategory = [
     {
@@ -67,6 +68,8 @@ export default function Home() {
     function handleSearch() {
         if (inputSearch.trim()) {
             navigate(`/products/search/${inputSearch}`);
+        } else {
+            toastService.warning("Digite algo para buscar");
         }
     }
 
@@ -74,10 +77,9 @@ export default function Home() {
         setIsLoadingRecentsProducts(true);
         try {
             const response = await getApiRecentsProducts();
-
             setRecentsProducts(response.data);
         } catch (error) {
-            alert("Houve um erro ao buscar produtos recentes.")
+            toastService.apiError(error, "Erro ao buscar produtos recentes");
         }
         setIsLoadingRecentsProducts(false);
     };
@@ -86,10 +88,9 @@ export default function Home() {
         setIsLoadingRecommendedProducts(true);
         try {
             const response = await getApiRecommendedProducts();
-
             setRecommendedProducts(response.data);
         } catch (error) {
-            alert("Houve um erro ao buscar produtos recomendados.")
+            toastService.apiError(error, "Erro ao buscar produtos recomendados");
         }
         setIsLoadingRecommendedProducts(false);
     };
@@ -212,7 +213,6 @@ export default function Home() {
                             <h2 className="text-white font-bold text-3xl">Explore por Categorias</h2>
                             <p className="text-white/80 text-lg">Encontre exatamente o que você procura</p>
                         </div>
-                        {isLoadingRecommendedProducts && <ListLoading />}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 justify-items-center">
                             {itemsCategory.map((category, index) => (
                                 <div

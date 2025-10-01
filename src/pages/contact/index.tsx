@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toastService } from "../../utils/toastConfig";
 
 type ContactForm = {
     nome: string;
@@ -65,18 +66,18 @@ export default function Contact() {
             setTimeout(() => {
                 console.log("Dados do contato:", formData);
                 setIsSubmitting(false);
-                setSubmitSuccess(true);
+
+                // Substitui setSubmitSuccess(true)
+                toastService.success("Mensagem enviada com sucesso! Entraremos em contato em breve.");
 
                 setFormData({
                     nome: "",
                     email: "",
                     mensagem: ""
                 });
-
-                setTimeout(() => {
-                    setSubmitSuccess(false);
-                }, 5000);
             }, 1500);
+        } else {
+            toastService.warning("Por favor, preencha todos os campos corretamente");
         }
     };
 

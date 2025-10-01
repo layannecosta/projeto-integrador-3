@@ -5,6 +5,7 @@ import { getApiAllProducts, getApiAllProductsOrders } from "./services";
 import ListLoading from "../../components/list-loading";
 import { IoIosSearch } from "react-icons/io";
 import { useNavigate } from "react-router";
+import { toastService } from "../../utils/toastConfig";
 
 export default function ListAllProducts() {
    const navigate = useNavigate();
@@ -14,14 +15,15 @@ export default function ListAllProducts() {
    const [inputSearch, setInputSearch] = useState("");
 
    async function getAllProducts() {
-      setIsLoadingRecents(true)
+      setIsLoadingRecents(true);
       try {
          const response = await getApiAllProducts();
          setAllProducts(response.data);
+         toastService.success(`${response.data.length} produtos carregados`);
       } catch (error) {
-         alert("Houve um erro ao buscar produtos recentes.");
+         toastService.apiError(error, "Erro ao buscar produtos");
       }
-      setIsLoadingRecents(false)
+      setIsLoadingRecents(false);
    }
 
    async function getAllOrdersProducts(typeOrder: "descending" | "ascending") {
@@ -30,10 +32,20 @@ export default function ListAllProducts() {
       try {
          const response = await getApiAllProductsOrders(typeOrder);
          setAllProducts(response.data);
+         const orderText = typeOrder === "ascending" ? "menor preço" : "maior preço";
+         toastService.info(`Produtos ordenados por ${orderText}`);
       } catch (error) {
-         alert("Houve um erro ao buscar produtos recentes.");
+         toastService.apiError(error, "Erro ao ordenar produtos");
       }
-      setIsLoadingRecents(false)
+      setIsLoadingRecents(false);
+   }
+
+   function handleSearch() {
+      if (inputSearch.trim()) {
+         navigate(`/products/search/${inputSearch}`);
+      } else {
+         toastService.warning("Digite algo para buscar");
+      }
    }
 
    useEffect(() => {
@@ -59,17 +71,13 @@ export default function ListAllProducts() {
                      value={inputSearch}
                      onChange={(event) => setInputSearch(event.target.value)}
                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' && inputSearch.trim()) {
-                           navigate(`/products/search/${inputSearch}`);
+                        if (event.key === 'Enter') {
+                           handleSearch();
                         }
                      }}
                   />
                   <button
-                     onClick={() => {
-                        if (inputSearch.trim()) {
-                           navigate(`/products/search/${inputSearch}`);
-                        }
-                     }}
+                     onClick={handleSearch}
                      className="bg-primary hover:bg-primary/90 transition-colors duration-200 p-2 rounded-full cursor-pointer ml-3">
                      <IoIosSearch size={20} className="text-white" />
                   </button>
